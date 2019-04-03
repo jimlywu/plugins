@@ -73,6 +73,7 @@ public class InAppPurchasePlugin implements MethodCallHandler {
 
   @Override
   public void onMethodCall(MethodCall call, Result result) {
+    android.util.Log.d("inap", "call:" + call.method);
     switch (call.method) {
       case MethodNames.IS_READY:
         isReady(result);
@@ -118,12 +119,14 @@ public class InAppPurchasePlugin implements MethodCallHandler {
         new BillingClientStateListener() {
           @Override
           public void onBillingSetupFinished(int responseCode) {
+            android.util.Log.d("inap", "start connection onBillingSetupFinished");
             // Consider the fact that we've finished a success, leave it to the Dart side to validate the responseCode.
             result.success(responseCode);
           }
 
           @Override
           public void onBillingServiceDisconnected() {
+            android.util.Log.d("inap", "start connection onBillingServiceDisconnected");
             final Map<String, Object> arguments = new HashMap<>();
             arguments.put("handle", handle);
             channel.invokeMethod(MethodNames.ON_DISCONNECT, arguments);
@@ -132,6 +135,7 @@ public class InAppPurchasePlugin implements MethodCallHandler {
   }
 
   private void endConnection(final Result result) {
+    android.util.Log.d("inap", "end connection");
     if (billingClient != null) {
       billingClient.endConnection();
       billingClient = null;
